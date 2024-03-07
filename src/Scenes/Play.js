@@ -15,6 +15,7 @@ class Play extends Phaser.Scene
 
     create ()
     {
+        this.tweenPlaying=false
         this.codeEntered =false
         this.timeText = this.add.text(32, 32);
         comboSize =minComboSize
@@ -30,7 +31,7 @@ class Play extends Phaser.Scene
 
 
         console.log('PlayScene: create')
-        this.combo=this.createCombo(comboSize)
+        this.combo=this.createMyCombo(comboSize)
         this.arrow=this.add.image(centerX,centerY,'Keys').setScale(10)
 
         //this.timer = this.timedEvent = this.time.delayedCall(timeLeft, this.timerFunc, [], this,{loop:true});
@@ -54,14 +55,14 @@ class Play extends Phaser.Scene
         if(this.combo.enabled==false){
             console.log("combo expired")
         }
-        if(Phaser.Input.Keyboard.JustDown(keySPACE)){
-            //console.log(c)
-            this.combo=this.createCombo(comboSize)
+        if(this.codeEntered==true){
+            this.combo=this.createMyCombo(comboSize)
             
         }
         
         this.displayCurrentKey(this.arrow,this.combo)
 
+        //logically this should be lives==0
         if(lives==1){
             this.lose()
         }
@@ -74,56 +75,86 @@ class Play extends Phaser.Scene
     displayCurrentKey(arrow,combo){
         let current = combo.current
     
-        if(current ==37){
+        if(current ==37 && !this.tweenPlaying){
             if(Phaser.Input.Keyboard.JustDown(keyRIGHT )|| Phaser.Input.Keyboard.JustDown(keyDOWN)||Phaser.Input.Keyboard.JustDown(keyUP)||Phaser.Input.Keyboard.JustDown(keyA)||Phaser.Input.Keyboard.JustDown(keyD)){
                 console.log("wrongKey")
 
                 this.wrongKeyTween(arrow)
             }
+            else if(Phaser.Input.Keyboard.JustDown(keyLEFT)){
+                console.log("rightKey")
+                this.rightKeyTween(arrow)
+
+            }
             arrow.setTexture('Keys',4)
 
-        }else if(current==38){
+        }else if(current==38 && !this.tweenPlaying){
             if(Phaser.Input.Keyboard.JustDown(keyRIGHT )|| Phaser.Input.Keyboard.JustDown(keyDOWN)||Phaser.Input.Keyboard.JustDown(keyLEFT)||Phaser.Input.Keyboard.JustDown(keyA)||Phaser.Input.Keyboard.JustDown(keyD)){
                 console.log("wrongKey")
 
                 this.wrongKeyTween(arrow)
             }
+            else if(Phaser.Input.Keyboard.JustDown(keyUP)){
+                console.log("rightKey")
+                this.rightKeyTween(arrow)
+
+            }
             arrow.setTexture('Keys',3)
         }
-        else if(current==39){
+        else if(current==39 && !this.tweenPlaying){
             if(Phaser.Input.Keyboard.JustDown(keyLEFT )|| Phaser.Input.Keyboard.JustDown(keyDOWN)||Phaser.Input.Keyboard.JustDown(keyUP)||Phaser.Input.Keyboard.JustDown(keyA)||Phaser.Input.Keyboard.JustDown(keyD)){
                 console.log("wrongKey")
 
                 this.wrongKeyTween(arrow)
             }
+            else if(Phaser.Input.Keyboard.JustDown(keyRIGHT)){
+                console.log("rightKey")
+                this.rightKeyTween(arrow)
+
+            }
            
         arrow.setTexture('Keys',2)
 
         }
-        else if(current==40){
+        else if(current==40 && !this.tweenPlaying){
             if(Phaser.Input.Keyboard.JustDown(keyRIGHT )|| Phaser.Input.Keyboard.JustDown(keyLEFT)||Phaser.Input.Keyboard.JustDown(keyUP)||Phaser.Input.Keyboard.JustDown(keyA)||Phaser.Input.Keyboard.JustDown(keyD)){
                 console.log("wrongKey")
 
                 this.wrongKeyTween(arrow)
             }
+            else if(Phaser.Input.Keyboard.JustDown(keyDOWN)){
+                console.log("rightKey")
+                this.rightKeyTween(arrow)
+
+            }
             
             arrow.setTexture('Keys',5)
 
         }
-        else if(current == 65){
+        else if(current == 65 && !this.tweenPlaying){
             if(Phaser.Input.Keyboard.JustDown(keyRIGHT )|| Phaser.Input.Keyboard.JustDown(keyDOWN)||Phaser.Input.Keyboard.JustDown(keyUP)||Phaser.Input.Keyboard.JustDown(keyLEFT)||Phaser.Input.Keyboard.JustDown(keyD)){
                 console.log("wrongKey")
 
                 this.wrongKeyTween(arrow)
             }
+            else if(Phaser.Input.Keyboard.JustDown(keyA)){
+                console.log("rightKey")
+                this.rightKeyTween(arrow)
+
+            }
           
             arrow.setTexture('Keys',0)
         }
-        else if(current == 68) {
+        else if(current == 68 && !this.tweenPlaying) {
             if(Phaser.Input.Keyboard.JustDown(keyRIGHT )|| Phaser.Input.Keyboard.JustDown(keyDOWN)||Phaser.Input.Keyboard.JustDown(keyUP)||Phaser.Input.Keyboard.JustDown(keyA)||Phaser.Input.Keyboard.JustDown(keyLEFT)){
                 console.log("wrongKey")
 
-                this.wrongKeyTween(arrow)
+                //this.wrongKeyTween(arrow)
+            }
+            else if(Phaser.Input.Keyboard.JustDown(keyD)){
+                console.log("rightKey")
+                this.rightKeyTween(arrow)
+
             }
 
             arrow.setTexture('Keys',1)
@@ -149,11 +180,11 @@ class Play extends Phaser.Scene
         return product;
     }
 
-    createCombo(length){
+    createMyCombo(length){
         this.code=this.createCode(length)
         //this.printCombo(this.code)
         this.combo=this.input.keyboard.createCombo(this.code,{resetOnWrongKey: false},{deleteOnMatch:true})
-
+        this.codeEntered =false
         this.input.keyboard.on('keycombomatch', event =>
     {
 
@@ -169,16 +200,16 @@ class Play extends Phaser.Scene
             timeScale: 1,
             paused: false
         })
-        this.createCombo(comboSize)
-        this.time.addEvent(timer);
-        console.log('COMBO ENTERED');
+        
+        this.time.addEvent(timer)
+        console.log('COMBO ENTERED')
 
     });
     return this.combo;
     }
 
     printCombo(combo){
-        console.log("NEW COMBO:")
+       //console.log("NEW COMBO:")
         let count=0
         while(count<combo.length){
             console.log(combo[count])
@@ -187,6 +218,7 @@ class Play extends Phaser.Scene
     }
 
     timerFunc(){
+        //delete old key, create new key
         console.log("timer went off")
         lives-=1
         console.log('Bones Left: %d',lives)
@@ -207,9 +239,12 @@ class Play extends Phaser.Scene
             onStart: () => {
                 object.setTint(0xff0000)
                 console.log("in tween")
+                this.tweenPlaying =true
             },
             onComplete: () => {
-                object.setTint(0xffffff)            }
+                object.setTint(0xffffff)
+                this.tweenPlaying =false           
+             }
         })
 
     }
@@ -226,9 +261,13 @@ class Play extends Phaser.Scene
             onStart: () => {
                 object.setTint(0x00ff00)
                 console.log("in tween")
+                this.tweenPlaying =true
             },
             onComplete: () => {
-                object.setTint(0xffffff)            }
+                object.setTint(0xffffff)
+                this.tweenPlaying =false
+                        
+            }
         })
 
     }
