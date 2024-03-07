@@ -22,7 +22,7 @@ let timeLeft
 let timer
 let wrongKeyTween 
 let lives
-
+let score
 
 let keyA, keyD, keyLEFT, keyRIGHT, keyUP, keyDOWN, keySPACE
 
