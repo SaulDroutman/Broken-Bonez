@@ -6,6 +6,7 @@ class Bike extends Phaser.Physics.Arcade.Sprite {
                       
         this.body.setSize(this.width, this.height/2)
         this.body.setOffset(0,20)
+        this.setGravity(0,200)
 
         wheel1 = scene.physics.add.image();
         wheel1.body.setCircle(10);

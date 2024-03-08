@@ -8,8 +8,14 @@ let config = {
     physics: {
       default: 'arcade',
       arcade: {
+        //gravity: { y: 100 * 3 },
         debug: true
-      }
+      },
+    },
+    matter: {
+      debug: true,
+      gravity: { y: 0.5 }
+
     },
     scene:[Load,Menu,Play,GameOver]
   }
@@ -43,3 +49,5 @@ let keyA, keyD, keyLEFT, keyRIGHT, keyUP, keyDOWN, keySPACE
 //Tweens (turning arrows colors when right or wrong)
 //Camera (scene transitions)
 //Animation manager (chaning arrows, biker tricks)
+
+//current bug on first combo entered index goes 0-3 onwards it goes 0-2

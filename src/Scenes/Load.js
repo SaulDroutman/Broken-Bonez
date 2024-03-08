@@ -45,6 +45,8 @@ class Load extends Phaser.Scene {
         this.load.image('letterA', 'img/A.png')
         this.load.image('letterD', 'img/D.png')
         this.load.image('background', 'img/Background.png')
+        this.load.image('floor', 'img/FLoor.png')
+        this.load.image('jump', 'img/Jump.png')
         
         // load audio assets
 

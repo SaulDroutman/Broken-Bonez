@@ -15,7 +15,10 @@ class Play extends Phaser.Scene
 
     create ()
     {   
+
         this.add.image(centerX,centerY,'background').setScale(100)
+        this.ground=this.physics.add.image(centerX,centerY*2.4,'floor').setScale(2)
+        this.ground.setImmovable()
         this.currentPosition=0
         score=0
         this.tweenPlaying=false
@@ -34,9 +37,15 @@ class Play extends Phaser.Scene
         lives=10
         //lives=5
 
-        this.bike = new Bike (this,150,100,'bike').setOrigin(0.5, 0).setScale(2)
+        this.bike = new Bike (this,20,200,'bike').setOrigin(0.5, 0).setScale(2)
+
+        //camera settings
+        this.cameras.main.startFollow(ship);
+        this.cameras.main.setZoom(2);
         
-        console.log('PlayScene: create')
+        //physics coliders
+        this.physics.add.collider(this.bike, this.ground)
+        
         this.combo=this.createMyCombo(comboSize)
         this.arrow=this.add.image(centerX,centerY,'Keys').setScale(10)
 
@@ -49,6 +58,8 @@ class Play extends Phaser.Scene
             loop: true
         });
 
+        //correct or wrong key pressed
+        //currently buggy
         this.input.keyboard.on('keydown', event =>
         {
             console.log("keydownevent")
@@ -56,30 +67,26 @@ class Play extends Phaser.Scene
             console.log(this.currentPosition)
             if(this.currentPosition == this.combo.index){
                 console.log("dummy dummy")
+                score-=20
                 if(!this.tweenPlaying){
                     this.wrongKeyTween(this.arrow)
-                    score-=20
+                    
                 }
             }
             else{
                 this.currentPosition = this.combo.index
                 //this.currentPosition++
                 console.log("you got it!!")
+                score+=20
                 if(!this.tweenPlaying){
                     this.rightKeyTween(this.arrow)
-                    score+=20
+                    
                     //add level multiplier and no mistakes multiplier
                 }
-
             }
 
         });
-
-        
-
-       
-        this.bike.setVelocity(10)
-        
+        //this.bike.setVelocity(10)    
     }
 
     update(){
@@ -91,7 +98,8 @@ class Play extends Phaser.Scene
 
         //if combo entered make new one
         if(this.codeEntered==true){
-            //this.currentPosition=0
+            this.currentPosition=0
+            console.log("combo entered")
             this.combo=this.createMyCombo(comboSize)
             
             
