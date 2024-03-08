@@ -27,6 +27,11 @@ class Load extends Phaser.Scene {
             frameHeight: 32,
         })
 
+        this.load.spritesheet('bike', 'img/Bike.png', {
+            frameWidth: 40,
+            frameHeight: 40,
+        })
+
         //load custom font
         //Font from https://www.1001fonts.com/cartoon-bones-font.html by  Galdino Otten
         this.loadFont("bonesFont", "assets/font/Cartoon_Bones.ttf");
@@ -39,6 +44,7 @@ class Load extends Phaser.Scene {
         this.load.image('downArrow', 'img/DownArrow.png')
         this.load.image('letterA', 'img/A.png')
         this.load.image('letterD', 'img/D.png')
+        this.load.image('background', 'img/Background.png')
         
         // load audio assets
 

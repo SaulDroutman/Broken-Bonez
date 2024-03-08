@@ -14,7 +14,8 @@ class Play extends Phaser.Scene
     }
 
     create ()
-    {
+    {   
+        this.add.image(centerX,centerY,'background').setScale(100)
         this.currentPosition=0
         score=0
         this.tweenPlaying=false
@@ -29,9 +30,11 @@ class Play extends Phaser.Scene
         keyUP = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
         keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
         keyD = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
+        //for working on game over screen
         lives=10
+        //lives=5
 
-
+        this.bike = new Bike (this,150,100,'bike').setOrigin(0.5, 0).setScale(2)
         
         console.log('PlayScene: create')
         this.combo=this.createMyCombo(comboSize)
@@ -55,6 +58,7 @@ class Play extends Phaser.Scene
                 console.log("dummy dummy")
                 if(!this.tweenPlaying){
                     this.wrongKeyTween(this.arrow)
+                    score-=20
                 }
             }
             else{
@@ -63,6 +67,8 @@ class Play extends Phaser.Scene
                 console.log("you got it!!")
                 if(!this.tweenPlaying){
                     this.rightKeyTween(this.arrow)
+                    score+=20
+                    //add level multiplier and no mistakes multiplier
                 }
 
             }
@@ -72,17 +78,20 @@ class Play extends Phaser.Scene
         
 
        
-
+        this.bike.setVelocity(10)
         
     }
 
     update(){
+        //show timer
         this.timeText.setText(`Event.progress: ${timer.getRemainingSeconds().toString().substr(0, 4)}`);
-        if(this.combo.enabled==false){
-            console.log("combo expired")
-        }
+        
+
+        
+
+        //if combo entered make new one
         if(this.codeEntered==true){
-            this.currentPosition=0
+            //this.currentPosition=0
             this.combo=this.createMyCombo(comboSize)
             
             
@@ -90,10 +99,15 @@ class Play extends Phaser.Scene
         
         this.displayCurrentKey(this.arrow,this.combo)
 
-        //logically this should be lives==0
-        if(lives==1){
+        //end game
+        if(lives==0){
             this.lose()
         }
+
+        //keep wheels centered
+        this.centerBodyOnXY(wheel1.body, this.bike.body.x + 67, this.bike.body.y + 30);
+        this.centerBodyOnXY(wheel2.body, this.bike.body.x +13, this.bike.body.y + 30);
+          
 
     }
 
@@ -210,7 +224,7 @@ class Play extends Phaser.Scene
 
     timerFunc(){
         //delete old key, create new key
-        console.log("timer went off")
+        console.log("combo expired")
         lives-=1
         console.log('Bones Left: %d',lives)
 
@@ -264,6 +278,29 @@ class Play extends Phaser.Scene
     
     lose(){
         this.cameras.main.fadeOut(200);
+        this.scene.start('GameOverScene')
     }
+
+    //idk if i need these  Compound bodies in Arcade Physics from https://codepen.io/samme/pen/ExYGRyo?editors=0010
+
+    centerBodyOnBody (a, b) {
+        a.position.set(
+          b.x + b.halfWidth - a.halfWidth,
+          b.y + b.halfHeight - a.halfHeight
+        );
+      }
+      
+       centerBodyOnPoint (a, p) {
+        centerBodyOnXY(a, p.x, p.y);
+      }
+      
+       centerBodyOnXY (a, x, y) {
+        a.position.set(
+          x - a.halfWidth,
+          y - a.halfHeight
+        );
+      }
+
+   
 
 }

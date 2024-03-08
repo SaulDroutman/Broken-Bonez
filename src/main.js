@@ -5,7 +5,13 @@ let config = {
     render:{
       pixelArt: true
     },
-    scene:[Load,Menu,Play]
+    physics: {
+      default: 'arcade',
+      arcade: {
+        debug: true
+      }
+    },
+    scene:[Load,Menu,Play,GameOver]
   }
 let game = new Phaser.Game(config)
 
@@ -23,10 +29,12 @@ let timer
 let wrongKeyTween 
 let lives
 let score
+let highScore=[0,0,0,0,0]
+let wheel1, wheel2
 
 let keyA, keyD, keyLEFT, keyRIGHT, keyUP, keyDOWN, keySPACE
 
-let highScore =0
+
 
 
 //Phaser major components used:
