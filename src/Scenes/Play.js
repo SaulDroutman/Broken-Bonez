@@ -79,8 +79,8 @@ class Play extends Phaser.Scene
         this.input.keyboard.on('keydown', event =>
         {
             console.log("keydownevent")
-            console.log(this.combo.index)
-            console.log(this.currentPosition)
+            console.log("looking for: %d",this.combo.index)
+            console.log("you are on: %d",this.currentPosition)
             if(this.currentPosition == this.combo.index){
                 console.log("dummy dummy")
                 score-=20
@@ -107,8 +107,7 @@ class Play extends Phaser.Scene
 
     update(){
         if(!onGround){
-            timer.paused=false
-
+           timer.paused=false
         }
         //show timer
         this.timeText.setText(`Event.progress: ${timer.getRemainingSeconds().toString().substr(0, 4)}`);
@@ -122,13 +121,11 @@ class Play extends Phaser.Scene
 
         //if combo entered make new one
         if(this.codeEntered==true){
-            this.currentPosition=-0
+            this.currentPosition=0
             console.log("combo entered")
             this.combo=this.createMyCombo(comboSize)
             
-            
-        }
-        
+        }     
         if(!onGround){
             this.arrow.setAlpha(1)
         }
@@ -145,10 +142,9 @@ class Play extends Phaser.Scene
         this.centerBodyOnXY(wheel1.body, this.bike.body.x + 67, this.bike.body.y + 30);
         this.centerBodyOnXY(wheel2.body, this.bike.body.x +13, this.bike.body.y + 30);
         //this.centerBodyOnXY(this.arrow.body, this.bike.body.x+centerX, this.bike.body.y -300);
-          
+        this.displayCurrentKey(this.arrow,this.combo)
 
     }
-
     
     displayCurrentKey(arrow,combo){
         let current = combo.current
