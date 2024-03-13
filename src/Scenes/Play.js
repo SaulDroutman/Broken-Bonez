@@ -17,7 +17,7 @@ class Play extends Phaser.Scene
     {   
 
         this.add.image(centerX,centerY,'background').setScale(100)
-        this.ground=this.physics.add.image(centerX,centerY*2.4,'floor').setScale(2)
+        this.ground=this.physics.add.image(centerX,centerY*2.4,'floor').setScale(4,2)
         this.jump=this.physics.add.image(500,centerY+105,'jump').setScale(2)
         this.jump.setImmovable()
         this.ground.setImmovable()
@@ -131,6 +131,10 @@ class Play extends Phaser.Scene
         }
         else{
             this.arrow.setAlpha(0)
+        }
+
+        if(this.ground.x<this.bike.body.position.x+200){
+            this.ground.x=this.ground.x+400
         }
 
         //end game
