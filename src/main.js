@@ -17,7 +17,7 @@ let config = {
       gravity: { y: 0.5 }
 
     },
-    scene:[Load,Menu,Play,GameOver]
+    scene:[Load,Menu,Play,PlayCopy,GameOver]
   }
 let game = new Phaser.Game(config)
 
