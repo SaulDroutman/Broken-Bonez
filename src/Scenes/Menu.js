@@ -19,7 +19,7 @@ class Menu extends Phaser.Scene
 
     update(){
         if(Phaser.Input.Keyboard.JustDown(keySPACE)){
-            this.scene.start('PlayCopyScene') 
+            this.scene.start('PlayScene') 
         }
     }
 }

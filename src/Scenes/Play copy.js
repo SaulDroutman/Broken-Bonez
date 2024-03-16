@@ -112,21 +112,10 @@ class PlayCopy extends Phaser.Scene
     }
 
     update(){
-        //this.comboIndex=this.combo.index
 
-        
-        if(!onGround){
-           timer.paused=false
-        }
-        //show timer
-        this.timeText.setText(`Event.progress: ${timer.getRemainingSeconds().toString().substr(0, 4)}`);
-        
-        //move timer
-        this.timeText.x = this.bike.body.position.x;  
-        this.timeText.y = this.bike.body.position.y -100; 
-        //move arrow 
-        this.arrow.x = this.bike.body.position.x+centerX;  
-        this.arrow.y = this.bike.body.position.y -300  
+        //move Combo Text 
+        //this.arrow.x = this.bike.body.position.x+centerX;  
+        //this.arrow.y = this.bike.body.position.y -300  
 
         //if combo entered make new one
         if(this.codeEntered==true){
