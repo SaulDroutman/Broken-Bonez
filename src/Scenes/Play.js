@@ -25,7 +25,7 @@ class Play extends Phaser.Scene
         this.tweenPlaying=false
         this.codeEntered =false
         this.timeText = this.add.text(32, 32);
-        comboSize =minComboSize
+        comboSize =13
         timeLeft =4000
         keySPACE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
         keyLEFT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
@@ -41,7 +41,7 @@ class Play extends Phaser.Scene
         
         this.combo
         this.convertedcombo
-        this.comboText=this.add.text(centerX-180, centerY-200, this.convertedcombo, { fontFamily: 'bonesFont',fontSize:'50px' })
+        this.comboText=this.add.text(centerX-180, centerY-200, this.convertedcombo, { fontFamily: 'bonesFont',fontSize:'70px' }).setOrigin(.5)
         
         //display lives
         this.livesText=this.add.text(w, h, "", { fontFamily: 'bonesFont',fontSize:'70px',backgroundColor:"ffffff" })
@@ -56,8 +56,12 @@ class Play extends Phaser.Scene
         
         //physics coliders
         this.physics.add.collider(this.bike, this.ground,()=> {
+            if (!this.bike.anims.isPlaying) {
+                this.bike.anims.play('idle')
+              }
             onGround=true
             if(this.justJumped==true&&this.codeEntered==false){
+                this.combo.destroy()
                 this.wrongKeyTween(this.comboText)
                 lives-=1
                 this.makelivesText(this.livesText)
@@ -72,6 +76,7 @@ class Play extends Phaser.Scene
 
         this.physics.world.on('overlap', (gameObject1, gameObject2, body1, body2) =>
         {   
+            this.bike.anims.pause()
             if(onGround){
             //create new combo once you hit a jump
             this.comboText.setAlpha(1)
@@ -103,12 +108,11 @@ class Play extends Phaser.Scene
     }
 
     update(){
-        //this.comboIndex=this.combo.index
+        
+        //play idle animation
 
-        
+            
 
-        
-        
          //keep ground in front of player
          if(this.ground.x<this.bike.body.position.x+200){
             this.ground.x=this.ground.x+400
@@ -118,7 +122,7 @@ class Play extends Phaser.Scene
         }
 
         //move Combo Text 
-        this.comboText.x = this.bike.body.position.x+centerX-70;  
+        this.comboText.x = this.bike.body.position.x+centerX;  
         this.comboText.y = this.bike.body.position.y -300   
 
         //move lives text 
@@ -132,6 +136,8 @@ class Play extends Phaser.Scene
    
     }
 
+
+    //converts the combo array with keycodes to a matching string
     convertCombo(){
         //  65 = A
         //  68 = D
@@ -181,7 +187,7 @@ class Play extends Phaser.Scene
         return this.string
     }
     
-
+    // randomly generates code for the combo
     createCode(length){
         //  65 = A
         //  68 = D
@@ -201,6 +207,7 @@ class Play extends Phaser.Scene
         return product;
     }
 
+    //creates a combo of a given length
     createMyCombo(length){
         //debugger
         this.code=this.createCode(length)
@@ -211,20 +218,6 @@ class Play extends Phaser.Scene
         {
             this.rightKeyTween(this.comboText)
             this.codeEntered =true
-            timer.reset({
-                delay: timeLeft,                // ms
-                callback: this.timerFunc,
-                args: [],
-                callbackScope: this,
-                loop: true,
-                repeat: 0,
-                startAt: 0,
-                timeScale: 1,
-                paused: false
-            })
-            
-            
-            this.time.addEvent(timer)
             console.log('COMBO ENTERED')
 
         });
@@ -234,66 +227,40 @@ class Play extends Phaser.Scene
 
 
 
-    timerFunc(){
-        //add in delete old key, create new key
-        //console.log("combo expired")
-        //lives-=1
-        //console.log('Bones Left: %d',lives)
-
-        
-
-    }
 
    
-    
+    //sends you to game over scene
     lose(){
         this.cameras.main.fadeOut(200);
         this.scene.start('GameOverScene')
     }
 
-    //idk if i need these  Compound bodies in Arcade Physics from https://codepen.io/samme/pen/ExYGRyo?editors=0010
-
-    centerBodyOnBody (a, b) {
-        a.position.set(
-          b.x + b.halfWidth - a.halfWidth,
-          b.y + b.halfHeight - a.halfHeight
-        );
-      }
-      
-       centerBodyOnPoint (a, p) {
-        centerBodyOnXY(a, p.x, p.y);
-      }
-      
-       centerBodyOnXY (a, x, y) {
-        a.position.set(
-          x - a.halfWidth,
-          y - a.halfHeight
-        );
-      }
-
+   
    //tweens
 
-rightKeyTween(object){
-    wrongKeyTween = this.tweens.add({
-        targets: object,
-        alpha:1,
-        ease: 'Sine.easeIn',
-        duration: 200,
-        repeat: 0,
-        onStart: () => {
-            object.setTint(0x00ff00)
-            this.tweenPlaying =true
-        },
-        onComplete: () => {
-            object.setTint(0xffffff)
-            object.setAlpha(0)
-            this.tweenPlaying =false
-                    
-        }
-    })
+    //flashes green once you put correct code in
+    rightKeyTween(object){
+        wrongKeyTween = this.tweens.add({
+            targets: object,
+            alpha:1,
+            ease: 'Sine.easeIn',
+            duration: 200,
+            repeat: 0,
+            onStart: () => {
+                object.setTint(0x00ff00)
+                this.tweenPlaying =true
+            },
+            onComplete: () => {
+                object.setTint(0xffffff)
+                object.setAlpha(0)
+                this.tweenPlaying =false
+                        
+            }
+        })
 
-}
+    }
 
+//flashes the code red if you do not get it in time
 wrongKeyTween(object){
     wrongKeyTween = this.tweens.add({
         targets: object,
@@ -314,6 +281,8 @@ wrongKeyTween(object){
 
 }
 
+
+//displays the amount of lives you currently have
 makelivesText(text){
     text.text=""
     console.log("inmake lives with %d luives",lives)

@@ -56,6 +56,13 @@ class Load extends Phaser.Scene {
     create() {
 
         this.scene.start('MenuScene')
+
+        this.anims.create({
+            key: 'idle',
+            frames: this.anims.generateFrameNumbers('bike', { frames: [ 0, 1 ] }),
+            frameRate: 10,
+            repeat: -1
+        })
     }
 
     //loadFont function from Nanoo on https://stackoverflow.com/questions/51217147/how-to-use-a-local-font-in-phaser-3

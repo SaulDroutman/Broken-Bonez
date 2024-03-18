@@ -45,10 +45,9 @@ let keyA, keyD, keyLEFT, keyRIGHT, keyUP, keyDOWN, keySPACE
 
 
 //Phaser major components used:
-//Timer (looped events)
+//Timer for score
 //KeyCodes (combo for getting tricks)
 //Tweens (turning arrows colors when right or wrong)
 //Camera (scene transitions)
-//Animation manager (chaning arrows, biker tricks)
+//Animation manager (Bike tricks)
 
-//current bug on first combo entered index goes 0-3 onwards it goes 0-2

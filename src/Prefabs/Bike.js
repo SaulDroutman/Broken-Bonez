@@ -19,19 +19,10 @@ class Bike extends Phaser.Physics.Arcade.Sprite {
         create(){
 
 
-    
-
-
-  
-
-
-
         }
         update(){
 
-            
-
-            
+           
         }
 
         
