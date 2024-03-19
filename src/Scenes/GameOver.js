@@ -10,6 +10,7 @@ class GameOver extends Phaser.Scene
 
     create(){
         keySPACE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+        this.m = this.input.keyboard.addKey(77);
 
         this.add.text(centerX, centerY-200, 'GAME OVER', { fontFamily: 'bonesFont',fontSize:'60px' }).setOrigin(.5)
         this.highScoreCheck()
@@ -25,6 +26,9 @@ class GameOver extends Phaser.Scene
     update(){
         if(Phaser.Input.Keyboard.JustDown(keySPACE)){
             this.scene.start('PlayScene') 
+        }
+        if(Phaser.Input.Keyboard.JustDown(this.m)){
+            this.scene.start('MenuScene') 
         }
     }
 

@@ -89,6 +89,9 @@ class Play extends Phaser.Scene
                 this.combo.destroy()
                 this.wrongKeyTween(this.comboText)
                 lives-=1
+                if(lives==0){
+                    this.bike.anims.play('death')
+                }
                 this.makelivesText(this.livesText)
                 this.justJumped=false
                 //console.log("lost a life you have %d bones",lives)
@@ -101,9 +104,15 @@ class Play extends Phaser.Scene
 
         this.physics.world.on('overlap', (gameObject1, gameObject2, body1, body2) =>
         {   
-            this.bike.anims.pause()
+            this.bike.anims.stop()
+            this.bike.anims.play(listOfTricks[Math.floor((Math.random()*100) %6)])
             if(onGround){
+            //play random trick animation
+            
+
+            //lower volume
             this.bikesfx.setVolume(.3)
+            
             //create new combo once you hit a jump
             this.comboText.setAlpha(1)
             this.createMyCombo(comboSize)
@@ -192,7 +201,7 @@ class Play extends Phaser.Scene
 
             //move Combo Text 
             this.comboText.x = this.bike.body.position.x+centerX
-            this.comboText.y = this.bike.body.position.y -300   
+            this.comboText.y = this.bike.body.position.y -100   
 
             //move lives text 
             this.livesText.x = this.bike.body.position.x+w-100
@@ -205,7 +214,7 @@ class Play extends Phaser.Scene
         //end game
         else if(lives==0){
             this.crashsfx.play()
-            this.bike.anims.stop()
+            
             this.music.stop()
             this.bike.setVelocity(0)
             this.bikesfx.stop()

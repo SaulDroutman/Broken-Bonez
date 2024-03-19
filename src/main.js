@@ -18,6 +18,7 @@ let config = {
       gravity: { y: 0.5 }
 
     },
+    autoCenter: true,
     scene:[Load,Menu,Tutorial,Play,Credits,GameOver]
   }
 let game = new Phaser.Game(config)
@@ -36,6 +37,9 @@ let onGround =true
 
 //all key defs
 let keyA, keyD, keyLEFT, keyRIGHT, keyUP, keyDOWN, keySPACE
+
+//list of all tricks for random selection
+let listOfTricks=['backflip','trick1','trick2','frontflip','trick3','trick4']
 
 
 

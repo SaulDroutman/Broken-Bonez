@@ -32,6 +32,41 @@ class Load extends Phaser.Scene {
             frameHeight: 40,
         })
 
+        this.load.spritesheet('bikeBFlip', 'img/Bike_backflip.png', {
+            frameWidth: 40,
+            frameHeight: 40,
+        })
+        this.load.spritesheet('bikeFFlip', 'img/BikeFrontFlip.png', {
+            frameWidth: 40,
+            frameHeight: 40,
+        })
+
+        this.load.spritesheet('bikeTrick1', 'img/BikeTrick1.png', {
+            frameWidth: 40,
+            frameHeight: 40,
+        })
+
+        this.load.spritesheet('bikeTrick2', 'img/BikeTrick2.png', {
+            frameWidth: 40,
+            frameHeight: 40,
+        })
+
+        this.load.spritesheet('bikeTrick3', 'img/Biketrick3.png', {
+            frameWidth: 40,
+            frameHeight: 40,
+        })
+
+
+        this.load.spritesheet('bikeTrick4', 'img/Biketrick4.png', {
+            frameWidth: 40,
+            frameHeight: 40,
+        })
+
+        this.load.spritesheet('death', 'img/BikeDead.png', {
+            frameWidth: 40,
+            frameHeight: 40,
+        })
+
         //load custom font
         //Font from https://www.1001fonts.com/cartoon-bones-font.html by  Galdino Otten
         this.loadFont("bonesFont", "assets/font/Cartoon_Bones.ttf");
@@ -71,6 +106,58 @@ class Load extends Phaser.Scene {
             frameRate: 10,
             repeat: -1
         })
+
+        this.anims.create({
+            key: 'backflip',
+            frames: this.anims.generateFrameNumbers('bikeBFlip', { frames: [ 0, 1,2,3,0] }),
+            frameRate: 2,
+            repeat: 0
+        })
+
+        this.anims.create({
+            key: 'frontflip',
+            frames: this.anims.generateFrameNumbers('bikeFFlip', { frames: [ 0, 1,2,3,0] }),
+            frameRate: 2,
+            repeat: 0
+        })
+
+        this.anims.create({
+            key: 'trick1',
+            frames: this.anims.generateFrameNumbers('bikeTrick1', { frames: [ 0, 1,1,1,0] }),
+            frameRate: 2,
+            repeat: 0
+        })
+
+        this.anims.create({
+            key: 'trick2',
+            frames: this.anims.generateFrameNumbers('bikeTrick2', { frames: [ 0, 1,1,1,0] }),
+            frameRate: 2,
+            repeat: 0
+        })
+
+        this.anims.create({
+            key: 'trick3',
+            frames: this.anims.generateFrameNumbers('bikeTrick3', { frames: [ 0, 1,1,1,0] }),
+            frameRate: 2,
+            repeat: 0
+        })
+
+        this.anims.create({
+            key: 'trick4',
+            frames: this.anims.generateFrameNumbers('bikeTrick4', { frames: [ 0, 1,1,1,0] }),
+            frameRate: 2,
+            repeat: 0
+        })
+
+        this.anims.create({
+            key: 'death',
+            frames: this.anims.generateFrameNumbers('death', { frames: [ 0, 1,2,3,3,3,3,3] }),
+            frameRate: 2,
+            repeat: 0
+        })
+        
+        
+        
     }
 
     //loadFont function from Nanoo on https://stackoverflow.com/questions/51217147/how-to-use-a-local-font-in-phaser-3
