@@ -3,26 +3,33 @@ class GameOver extends Phaser.Scene
     
     constructor(){
         super('GameOverScene')
-        console.log('GameOverScene: constructor')
+        //console.log('GameOverScene: constructor')
        
 
     }
 
     create(){
-        this.add.text(centerX, centerY, 'GAME OVER', { fontFamily: 'bonesFont',fontSize:'40px' })
+        keySPACE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+
+        this.add.text(centerX, centerY-200, 'GAME OVER', { fontFamily: 'bonesFont',fontSize:'60px' }).setOrigin(.5)
         this.highScoreCheck()
-        this.printScore()
         highScore.sort((a, b) => b - a)
-        
+        this.printScore()
+        this.add.text(centerX, centerY-100, "High scores:", { fontFamily: 'bonesFont',fontSize:'30px' }).setOrigin(.5)
+        this.add.text(centerX, centerY+50, highScore, { fontFamily: 'Courier',fontSize:'40px' }).setOrigin(.5)
+
 
 
     }
 
-    highScoreCheck(){
-        if(highScore.length<5){
-            highScore.push(score)
+    update(){
+        if(Phaser.Input.Keyboard.JustDown(keySPACE)){
+            this.scene.start('PlayScene') 
         }
-        else{
+    }
+
+    highScoreCheck(){
+
             for (let i = 0; i<highScore.length;i++){
                 
                 if(highScore[i]<score){
@@ -33,13 +40,13 @@ class GameOver extends Phaser.Scene
                 }
 
             }
-        }
+        
     }
 
     //change this
     printScore(){
         for (let i = 0; i<highScore.length;i++){
-                console.log(highScore[i])
+                //console.log(highScore[i])
         }
 
     }

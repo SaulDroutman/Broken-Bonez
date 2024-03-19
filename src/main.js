@@ -30,10 +30,7 @@ let h = game.config.height
 let minComboSize =3
 let comboSize
 let maxComboSize =12
-let timeLeft
-let timer
-let wrongKeyTween 
-let lives
+let levelTween,wrongKeyTween, rightKeyTween,timer,lives,timeLeft
 let score
 let highScore=[0,0,0,0,0]
 let wheel1, wheel2
@@ -45,7 +42,7 @@ let keyA, keyD, keyLEFT, keyRIGHT, keyUP, keyDOWN, keySPACE
 
 
 //Phaser major components used:
-//Timer for score
+//Timer for score & level progression
 //KeyCodes (combo for getting tricks)
 //Tweens (turning arrows colors when right or wrong)
 //Camera (scene transitions)

@@ -15,8 +15,9 @@ class Play extends Phaser.Scene
     create ()
     {   
 
+        this.level=1
         this.justJumped=false;
-        this.add.image(centerX,centerY,'background').setScale(100)
+        this.background=this.add.image(centerX,centerY,'background').setScale(100)
         this.ground=this.physics.add.image(centerX,centerY*2.4,'floor').setScale(4,2)
         this.jump=this.physics.add.image(500,centerY+105,'jump').setScale(2)
         this.jump.setImmovable()
@@ -25,8 +26,8 @@ class Play extends Phaser.Scene
         this.tweenPlaying=false
         this.codeEntered =false
         this.timeText = this.add.text(32, 32);
-        comboSize =13
-        timeLeft =4000
+        comboSize =minComboSize
+        timeLeft =12000
         keySPACE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
         keyLEFT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
         keyRIGHT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
@@ -35,7 +36,13 @@ class Play extends Phaser.Scene
         keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
         keyD = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
         lives=5
-        //for working on game over screen
+        
+        this.levelText= this.add.text(centerX,centerY,"level:" +this.level,{ fontSize:'40px' }).setOrigin(.5).setTint(0xffff00)
+        this.levelTween(this.levelText)
+        //add music
+        this.music=this.sound.add('song', {volume: 0.1})
+        this.music.play()
+        this.music.loop=true
       
         //display combo
         
@@ -66,7 +73,7 @@ class Play extends Phaser.Scene
                 lives-=1
                 this.makelivesText(this.livesText)
                 this.justJumped=false
-                console.log("lost a life you have %d bones",lives)
+                //console.log("lost a life you have %d bones",lives)
 
             }
         })
@@ -80,12 +87,25 @@ class Play extends Phaser.Scene
             if(onGround){
             //create new combo once you hit a jump
             this.comboText.setAlpha(1)
-            this.combo=this.createMyCombo(comboSize)
+            this.createMyCombo(comboSize)
             this.convertedCombo=this.convertCombo()
-            console.log(this.convertedCombo)
+            //console.log(this.convertedCombo)
             this.comboText.text=this.convertedCombo
-            
 
+            //reset timer after touching jump
+            timer.reset({
+                delay: 1000000,                // ms
+                args: [],
+                callbackScope: this,
+                loop: true,
+                repeat: 0,
+                startAt: 0,
+                timeScale: 1,
+                paused: false
+            })
+            
+            
+            this.time.addEvent(timer)
             }
             this.justJumped=true
             body1.velocity.y = -500
@@ -94,40 +114,52 @@ class Play extends Phaser.Scene
 
         });
 
-
         //timer for score work on later
-        timer = this.time.addEvent({
+        this.levelTimer = this.time.addEvent({
             delay: timeLeft,                // ms
             callback: this.timerFunc,
             //args: [],
             callbackScope: this,
             loop: true,
+        })
+
+        //timer for score work on later
+        timer = this.time.addEvent({
+            delay: 200000,                // ms
+            //args: [],
+            callbackScope: this,
+            loop: true,
             paused:true
-        });
+        })
 
     }
 
     update(){
         
-        //play idle animation
-
-            
 
          //keep ground in front of player
          if(this.ground.x<this.bike.body.position.x+200){
             this.ground.x=this.ground.x+400
         }
+        //keep jump in front of player
         if(this.jump.x<this.bike.body.position.x+200 && this.jump.y>this.bike.body.position.y+200){
             this.jump.x=this.jump.x+600
         }
 
+        //scroll background
+        this.background.x +=.5
+
         //move Combo Text 
-        this.comboText.x = this.bike.body.position.x+centerX;  
+        this.comboText.x = this.bike.body.position.x+centerX
         this.comboText.y = this.bike.body.position.y -300   
 
         //move lives text 
-        this.livesText.x = this.bike.body.position.x+w-100;  
-        this.livesText.y = this.bike.body.position.y -h -100   
+        this.livesText.x = this.bike.body.position.x+w-100
+        this.livesText.y = this.bike.body.position.y -h -100
+        
+        //move level text
+        this.levelText.x = this.bike.body.position.x+ 330
+        this.levelText.text="level: "+this.level
 
         //end game
         if(lives==0){
@@ -155,28 +187,23 @@ class Play extends Phaser.Scene
                 this.string=this.string +"\u2190"
     
             }else if(this.combo.keyCodes[this.count]  ==38 ){
-                console.log("in 38")
             
                 this.string=this.string +"\u2191"
     
             }
             else if(this.combo.keyCodes[this.count]  ==39 ){
-                console.log("in 39")
                 this.string=this.string +"\u2192"
     
             }
             else if(this.combo.keyCodes[this.count]  ==40 ){
-                console.log("in 40")
                 this.string=this.string +"\u2193"
     
             }
             else if(this.combo.keyCodes[this.count]  ==65 ){
-                console.log("in 65")
                 this.string=this.string +"A"
     
             }
             else if(this.combo.keyCodes[this.count]  ==68 ){
-                console.log("in 68")
                 this.string=this.string +"D"
     
             }
@@ -211,18 +238,20 @@ class Play extends Phaser.Scene
     createMyCombo(length){
         //debugger
         this.code=this.createCode(length)
-        //this.printCombo(this.code)
         this.combo=this.input.keyboard.createCombo(this.code,{resetOnWrongKey: true},{deleteOnMatch:true})
         this.codeEntered =false
         this.input.keyboard.on('keycombomatch', event =>
         {
             this.rightKeyTween(this.comboText)
             this.codeEntered =true
-            console.log('COMBO ENTERED')
 
+            //bug where combo match is triggered for however many combos have been created even though i have deleteonmatch to true
+            //console.log('COMBO ENTERED')
+            //scoring
+            let elapsed = timer.getElapsedSeconds();
+            score+=Math.floor(100-elapsed*10)
         });
-        console.log(this.code)
-        return this.combo;
+        //(this.code)
     }
 
 
@@ -231,7 +260,9 @@ class Play extends Phaser.Scene
    
     //sends you to game over scene
     lose(){
+
         this.cameras.main.fadeOut(200);
+        this.music.stop()
         this.scene.start('GameOverScene')
     }
 
@@ -240,7 +271,7 @@ class Play extends Phaser.Scene
 
     //flashes green once you put correct code in
     rightKeyTween(object){
-        wrongKeyTween = this.tweens.add({
+        rightKeyTween = this.tweens.add({
             targets: object,
             alpha:1,
             ease: 'Sine.easeIn',
@@ -281,11 +312,35 @@ wrongKeyTween(object){
 
 }
 
+//fades level number out
+levelTween(object){
+    levelTween = this.tweens.add({
+        targets: object,
+        alpha:1,
+        ease: 'Sine.easeIn',
+        duration: 1700,
+        repeat: 0,
+
+        onComplete: () => {
+ 
+            object.setAlpha(0)        
+         }
+    })
+
+}
+
+timerFunc(){
+    this.level++
+    if(comboSize<16){
+        comboSize++
+        this.levelText.setAlpha(1)
+        this.levelTween(this.levelText)
+    }
+}
 
 //displays the amount of lives you currently have
 makelivesText(text){
     text.text=""
-    console.log("inmake lives with %d luives",lives)
     for(let x=0;x<lives;x++){
         text.text=text.text+"X"
     }

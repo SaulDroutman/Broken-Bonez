@@ -2,12 +2,12 @@
 class Load extends Phaser.Scene {
     constructor() {
         super('loadScene')
-        console.log("Loading: constructor")
+        //console.log("Loading: constructor")
 
     }
 
     preload() {
-        console.log("Loading: preload")
+        //console.log("Loading: preload")
         // loading bar
         // see: https://rexrainbow.github.io/phaser3-rex-notes/docs/site/loader/
         let loadingBar = this.add.graphics()
@@ -49,7 +49,10 @@ class Load extends Phaser.Scene {
         this.load.image('jump', 'img/Jump.png')
         
         // load audio assets
-
+        //music by Wayne John Bradley
+        //"Wayne John Bradley - Grunge Rock Instrumental" is under a Creative Commons (CC-BY 3.0) license Music promoted by BreakingCopyright: https://bit.ly/b-grunge
+        this.load.audio('song','/sound/song.mp3')
+        //motorcycle sfx Sound fx Land https://www.youtube.com/watch?v=sruRnTtDq34&ab_channel=SoundfxLand
         //console.log("LOAD.js || PRELOAD")
     }
 
