@@ -13,11 +13,6 @@ let config = {
         debug: false
       },
     },
-    matter: {
-      debug: true,
-      gravity: { y: 0.5 }
-
-    },
     autoCenter: true,
     scene:[Load,Menu,Tutorial,Play,Credits,GameOver]
   }
