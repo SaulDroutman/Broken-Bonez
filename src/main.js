@@ -11,7 +11,7 @@ let config = {
       arcade: {
         //gravity: { y: 100 * 3 },
         debug: false
-      },
+      }
     },
     autoCenter: true,
     scene:[Load,Menu,Tutorial,Play,Credits,GameOver]
