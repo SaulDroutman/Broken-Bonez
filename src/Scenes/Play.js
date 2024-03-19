@@ -35,7 +35,7 @@ class Play extends Phaser.Scene
         keyUP = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
         keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
         keyD = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
-        lives=1
+        lives=5
         
         this.UI = this.add.rectangle(100,100,1500,130,"0x313338").setOrigin(.5)
 
