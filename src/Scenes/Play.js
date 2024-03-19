@@ -17,9 +17,9 @@ class Play extends Phaser.Scene
 
         this.level=1
         this.justJumped=false;
-        this.background=this.add.image(centerX,centerY,'background').setScale(100)
+        this.background=this.add.tileSprite(centerX,centerY,600,600,'background').setScale(4)
         this.ground=this.physics.add.image(centerX,centerY*2.4,'floor').setScale(4,2)
-        this.jump=this.physics.add.image(500,centerY+105,'jump').setScale(2)
+        this.jump=this.physics.add.image(500,centerY+107,'jump').setScale(2)
         this.jump.setImmovable()
         this.ground.setImmovable()
         score=0
@@ -35,23 +35,40 @@ class Play extends Phaser.Scene
         keyUP = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
         keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
         keyD = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
-        lives=5
+        lives=1
         
+        this.UI = this.add.rectangle(100,100,1500,130,"0x313338").setOrigin(.5)
+
         this.levelText= this.add.text(centerX,centerY,"level:" +this.level,{ fontSize:'40px' }).setOrigin(.5).setTint(0xffff00)
         this.levelTween(this.levelText)
         //add music
-        this.music=this.sound.add('song', {volume: 0.1})
+        this.music=this.sound.add('song', {volume: 0.4})
         this.music.play()
         this.music.loop=true
-      
+
+        this.bikesfx=this.sound.add('bikesfx', {volume: 0})
+        this.bikesfx.play()
+        this.bikesfx.loop=true
+
+        this.goodSound=this.sound.add('good', {volume: 0.4})
+        this.badSound=this.sound.add('bad', {volume: 0.2})
+
+        this.crashsfx= this.sound.add('crashsfx',{volume:.5})
+
+
         //display combo
-        
+    
         this.combo
         this.convertedcombo
         this.comboText=this.add.text(centerX-180, centerY-200, this.convertedcombo, { fontFamily: 'bonesFont',fontSize:'70px' }).setOrigin(.5)
+
+        // UI elements
+        this.scoreText=this.add.text(100, h, "PLAYER 1 \n" +score, { fontFamily: 'Courier',fontSize:'30px' }).setOrigin(.5)
+        this.highscoreText=this.add.text(100, h, "HI SCORE  \n" +highScore[0], { fontFamily: 'Courier',fontSize:'30px' }).setOrigin(.5)
+
         
         //display lives
-        this.livesText=this.add.text(w, h, "", { fontFamily: 'bonesFont',fontSize:'70px',backgroundColor:"ffffff" })
+        this.livesText=this.add.text(w, h, "", { fontFamily: 'bonesFont',fontSize:'70px' })
         this.makelivesText(this.livesText)
         //player and physics 
         this.bike = new Bike (this,0,250,'bike').setOrigin(0.5, 0).setScale(2)
@@ -59,13 +76,14 @@ class Play extends Phaser.Scene
         //camera settings
         this.cameras.main.startFollow(this.bike);
         this.cameras.main.setZoom(.7);
-        this.cameras.main.setFollowOffset(-300,200)
+        this.cameras.main.setFollowOffset(-300,150)
         
         //physics coliders
         this.physics.add.collider(this.bike, this.ground,()=> {
             if (!this.bike.anims.isPlaying) {
                 this.bike.anims.play('idle')
               }
+              this.bikesfx.setVolume(.5)
             onGround=true
             if(this.justJumped==true&&this.codeEntered==false){
                 this.combo.destroy()
@@ -85,6 +103,7 @@ class Play extends Phaser.Scene
         {   
             this.bike.anims.pause()
             if(onGround){
+            this.bikesfx.setVolume(.3)
             //create new combo once you hit a jump
             this.comboText.setAlpha(1)
             this.createMyCombo(comboSize)
@@ -123,6 +142,16 @@ class Play extends Phaser.Scene
             loop: true,
         })
 
+        //timer for end leve work on later
+        this.endLevelTimer = this.time.addEvent({
+            delay: 2000,                // ms
+            callback: this.lose,
+            //args: [],
+            callbackScope: this,
+            loop: false,
+            paused:true
+        })
+
         //timer for score work on later
         timer = this.time.addEvent({
             delay: 200000,                // ms
@@ -136,34 +165,55 @@ class Play extends Phaser.Scene
 
     update(){
         
+        if(lives!=0){
+            //keep ui in front of player
+            this.UI.x=this.bike.body.position.x +400
+            this.UI.y=this.bike.body.position.y-500
 
-         //keep ground in front of player
-         if(this.ground.x<this.bike.body.position.x+200){
-            this.ground.x=this.ground.x+400
+            this.scoreText.x=this.bike.body.position.x 
+            this.scoreText.y=this.bike.body.position.y -h 
+            this.scoreText.text="PLAYER 1 \n"+score
+
+            this.highscoreText.x=this.bike.body.position.x +340
+            this.highscoreText.y=this.bike.body.position.y -h 
+
+            //keep ground in front of player
+            if(this.ground.x<this.bike.body.position.x+200){
+                this.ground.x=this.ground.x+400
+            }
+            //keep jump in front of player
+            if(this.jump.x<this.bike.body.position.x+200 && this.jump.y>this.bike.body.position.y+200){
+                this.jump.x=this.jump.x+600
+            }
+
+            //scroll background
+            this.background.tilePositionX+=3
+            this.background.x =this.bike.body.position.x+centerX
+
+            //move Combo Text 
+            this.comboText.x = this.bike.body.position.x+centerX
+            this.comboText.y = this.bike.body.position.y -300   
+
+            //move lives text 
+            this.livesText.x = this.bike.body.position.x+w-100
+            this.livesText.y = this.bike.body.position.y -h -40
+            
+            //move level text
+            this.levelText.x = this.bike.body.position.x+ 330
+            this.levelText.text="level: "+this.level
         }
-        //keep jump in front of player
-        if(this.jump.x<this.bike.body.position.x+200 && this.jump.y>this.bike.body.position.y+200){
-            this.jump.x=this.jump.x+600
-        }
-
-        //scroll background
-        this.background.x +=.5
-
-        //move Combo Text 
-        this.comboText.x = this.bike.body.position.x+centerX
-        this.comboText.y = this.bike.body.position.y -300   
-
-        //move lives text 
-        this.livesText.x = this.bike.body.position.x+w-100
-        this.livesText.y = this.bike.body.position.y -h -100
-        
-        //move level text
-        this.levelText.x = this.bike.body.position.x+ 330
-        this.levelText.text="level: "+this.level
-
         //end game
-        if(lives==0){
-            this.lose()
+        else if(lives==0){
+            this.crashsfx.play()
+            this.bike.anims.stop()
+            this.music.stop()
+            this.bike.setVelocity(0)
+            this.bikesfx.stop()
+            this.cameras.main.fadeOut(200);
+            this.endLevelTimer.paused = false;
+            
+
+            
         }
    
     }
@@ -241,11 +291,11 @@ class Play extends Phaser.Scene
         this.combo=this.input.keyboard.createCombo(this.code,{resetOnWrongKey: true},{deleteOnMatch:true})
         this.codeEntered =false
         this.input.keyboard.on('keycombomatch', event =>
-        {
+        {   
+            
             this.rightKeyTween(this.comboText)
             this.codeEntered =true
 
-            //bug where combo match is triggered for however many combos have been created even though i have deleteonmatch to true
             //console.log('COMBO ENTERED')
             //scoring
             let elapsed = timer.getElapsedSeconds();
@@ -260,9 +310,7 @@ class Play extends Phaser.Scene
    
     //sends you to game over scene
     lose(){
-
-        this.cameras.main.fadeOut(200);
-        this.music.stop()
+        
         this.scene.start('GameOverScene')
     }
 
@@ -278,6 +326,7 @@ class Play extends Phaser.Scene
             duration: 200,
             repeat: 0,
             onStart: () => {
+                this.goodSound.play()
                 object.setTint(0x00ff00)
                 this.tweenPlaying =true
             },
@@ -300,6 +349,7 @@ wrongKeyTween(object){
         duration: 200,
         repeat: 0,
         onStart: () => {
+            this.badSound.play()
             object.setTint(0xff0000)
             this.tweenPlaying =true
         },
@@ -331,7 +381,7 @@ levelTween(object){
 
 timerFunc(){
     this.level++
-    if(comboSize<16){
+    if(comboSize<maxComboSize){
         comboSize++
         this.levelText.setAlpha(1)
         this.levelTween(this.levelText)

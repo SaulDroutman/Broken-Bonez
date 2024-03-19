@@ -52,8 +52,13 @@ class Load extends Phaser.Scene {
         //music by Wayne John Bradley
         //"Wayne John Bradley - Grunge Rock Instrumental" is under a Creative Commons (CC-BY 3.0) license Music promoted by BreakingCopyright: https://bit.ly/b-grunge
         this.load.audio('song','/sound/song.mp3')
+
         //motorcycle sfx Sound fx Land https://www.youtube.com/watch?v=sruRnTtDq34&ab_channel=SoundfxLand
-        //console.log("LOAD.js || PRELOAD")
+        this.load.audio('bikesfx','/sound/bikeSFX.mp3')
+
+        this.load.audio('good','sound/powerup 16.wav')
+        this.load.audio('bad','sound/explosion 21.wav')
+        this.load.audio('crashsfx','sound/CrashSFX.mp3')
     }
 
     create() {

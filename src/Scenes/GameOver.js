@@ -15,10 +15,10 @@ class GameOver extends Phaser.Scene
         this.highScoreCheck()
         highScore.sort((a, b) => b - a)
         this.printScore()
-        this.add.text(centerX, centerY-100, "High scores:", { fontFamily: 'bonesFont',fontSize:'30px' }).setOrigin(.5)
-        this.add.text(centerX, centerY+50, highScore, { fontFamily: 'Courier',fontSize:'40px' }).setOrigin(.5)
+        this.add.text(centerX, centerY-150, "High scores:", { fontFamily: 'bonesFont',fontSize:'30px' }).setOrigin(.5)
+        this.add.text(centerX, centerY, highScore, { fontFamily: 'Courier',fontSize:'40px' }).setOrigin(.5)
 
-
+        this.add.text(centerX, centerY+200, 'Spacebar to play again or M for menu', { fontFamily: 'Courier',fontSize:'20px' }).setOrigin(.5)
 
     }
 
